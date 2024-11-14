@@ -31,11 +31,11 @@ def get_temp_path_file(file_csv):
         temp_file.write(file_csv)
         return temp_file.name
 
-def desencriptar_archivo(clave_privada, archivo_encriptado):
+def desencriptar_archivo(clave_privada, ruta_temporal_archivo_encritado):
     TAM_BLOQUE = 256  # Tamaño del bloque en bytes
-
+    desencriptado_exitoso = False
     contenido_desencriptado = b""
-    with open(archivo_encriptado, 'rb') as archivo:
+    with open(ruta_temporal_archivo_encritado, 'rb') as archivo:
         while True:
             bloque_encriptado = archivo.read(TAM_BLOQUE)
             if len(bloque_encriptado) == 0:
@@ -43,22 +43,11 @@ def desencriptar_archivo(clave_privada, archivo_encriptado):
 
             bloque_desencriptado = rsa.decrypt(bloque_encriptado, clave_privada)
             contenido_desencriptado += bloque_desencriptado
+        desencriptado_exitoso = True
+    
+    if desencriptado_exitoso:
+        os.remove(ruta_temporal_archivo_encritado)
 
     return contenido_desencriptado
 
-def encriptar_archivo(clave_publica, file_csv):
-    TAM_BLOQUE = 245  # Tamaño del bloque en bytes, ajustado para el padding
-    temp_dir = os.path.join(os.getcwd(), 'temp_csvs_encripted')
-    os.makedirs(temp_dir, exist_ok=True)
-    encrypted_file_path = os.path.join(temp_dir, 'logs_enc.csv')
-
-    with open(file_csv, 'rb') as archivo_csv:
-        with open(encrypted_file_path, 'wb') as archivo_encriptado:
-            while True:
-                bloque = archivo_csv.read(TAM_BLOQUE)
-                if len(bloque) == 0:
-                    break  # Se llegó al final del archivo
-
-                contenido_encriptado = rsa.encrypt(bloque, clave_publica)
-                archivo_encriptado.write(contenido_encriptado)
 
