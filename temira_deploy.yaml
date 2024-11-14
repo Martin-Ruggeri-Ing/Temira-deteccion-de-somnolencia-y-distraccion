@@ -112,7 +112,7 @@ spec:
         requests:
           storage: 5Gi
   
-  -metadata:
+  - metadata:
       name: temp-pdfs-storage
       labels:
         app: temira
@@ -122,7 +122,7 @@ spec:
         requests:
           storage: 5Gi
   
-  -metadata:
+  - metadata:
       name: temp-images-storage
       labels:
         app: temira
