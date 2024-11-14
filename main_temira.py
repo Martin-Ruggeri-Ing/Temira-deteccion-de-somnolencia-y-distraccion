@@ -8,8 +8,8 @@ from pdf_service import generar_informe_pdf
 from streamlit_service import add_bg_from_local
 
 def main():
-    logo = images_path + 'Logo.png'
-    fondo = images_path + 'Fondo2.png'
+    logo = 'Logo.png'
+    fondo = 'Fondo2.png'
     clave_privada = leer_clave('privada')
     st.set_page_config(page_title='Temira', page_icon=logo)
     st.title("TEMIRA")
