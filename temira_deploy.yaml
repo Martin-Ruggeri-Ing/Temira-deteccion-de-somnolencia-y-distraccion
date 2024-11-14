@@ -1,0 +1,115 @@
+#Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: temira-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+    - host: mruggeri-temira.my.kube.um.edu.ar
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: temira-service
+                port:
+                  number: 80
+
+---
+#ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: temira-config
+data:
+  STREAMLIT_SERVER_HEADLESS: true
+  STREAMLIT_SERVER_PORT: 8501
+  STREAMLIT_BROWSER_GATHER_USAGE_STATS: false
+
+---
+#Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: temira-service
+  labels:
+    app: temira
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 8502
+  selector:
+    app: temira
+
+---
+#StatefulSet
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: temira
+  labels:
+    app: temira
+spec:
+  serviceName: "temira"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: temira
+  template:
+    metadata:
+      labels:
+        app: temira
+    spec:
+
+      containers:
+      - name: temira
+        image: martinr2020/temira-web-analytics:latest
+
+        ports:
+        - containerPort: 8502
+
+        env:
+          - name: STREAMLIT_SERVER_HEADLESS
+            valueFrom:
+              configMapKeyRef:
+                name: temira-config
+                key: STREAMLIT_SERVER_HEADLESS
+
+          - name: STREAMLIT_SERVER_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: temira-config
+                key: STREAMLIT_SERVER_PORT
+
+          - name: STREAMLIT_BROWSER_GATHER_USAGE_STATS
+            valueFrom:
+              configMapKeyRef:
+                name: temira-config
+                key: STREAMLIT_BROWSER_GATHER_USAGE_STATS
+
+        volumeMounts:
+        - name: temp-storage
+          mountPath: /app/temp_csvs
+        - name: temp-storage
+          mountPath: /app/temp_pdfs
+        - name: temp-storage
+          mountPath: /app/images
+        - name: temp-storage
+          mountPath: /app/claves
+  
+  volumeClaimTemplates:
+  - metadata:
+      name: temp-storage
+      labels:
+        app: temira
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 5Gi
