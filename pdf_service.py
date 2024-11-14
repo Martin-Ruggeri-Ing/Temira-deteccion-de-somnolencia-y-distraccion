@@ -1,4 +1,3 @@
-from paths import images_path
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 from datetime import datetime
@@ -23,7 +22,7 @@ def generar_informe_pdf(rutas_imagenes, nombre_conductor):
     fecha = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     header = [
         [
-            Image(images_path + 'Logo.png', width=50, height=50, hAlign='RIGHT'),
+            Image('Logo.png', width=50, height=50, hAlign='RIGHT'),
             Paragraph("TEMIRA", styles["Heading1"]),
             Paragraph(f"Fecha: {fecha}", styles["Normal"])
         ]
