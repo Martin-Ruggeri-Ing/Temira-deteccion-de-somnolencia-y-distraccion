@@ -43,7 +43,7 @@ spec:
   type: LoadBalancer
   ports:
     - port: 80
-      targetPort: 8502
+      targetPort: 8501
   selector:
     app: temira
 
@@ -72,7 +72,7 @@ spec:
         image: martinr2020/temira-web-analytics:latest
 
         ports:
-        - containerPort: 8502
+        - containerPort: 8501
 
         env:
           - name: STREAMLIT_SERVER_HEADLESS
@@ -94,18 +94,16 @@ spec:
                 key: STREAMLIT_BROWSER_GATHER_USAGE_STATS
 
         volumeMounts:
-        - name: temp-storage
+        - name: temp-csvs-storage
           mountPath: /app/temp_csvs
-        - name: temp-storage
+        - name: temp-pdfs-storage
           mountPath: /app/temp_pdfs
-        - name: temp-storage
+        - name: temp-images-storage
           mountPath: /app/images
-        - name: temp-storage
-          mountPath: /app/claves
   
   volumeClaimTemplates:
   - metadata:
-      name: temp-storage
+      name: temp-csvs-storage
       labels:
         app: temira
     spec:
@@ -113,3 +111,24 @@ spec:
       resources:
         requests:
           storage: 5Gi
+  
+  -metadata:
+      name: temp-pdfs-storage
+      labels:
+        app: temira
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 5Gi
+  
+  -metadata:
+      name: temp-images-storage
+      labels:
+        app: temira
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 5Gi
+
