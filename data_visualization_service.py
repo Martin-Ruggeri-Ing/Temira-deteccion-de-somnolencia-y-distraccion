@@ -1,4 +1,3 @@
-import pandas as pd
 import matplotlib.pyplot as plt
 from paths import images_path
 from matplotlib.dates import DateFormatter, HourLocator
@@ -81,6 +80,37 @@ def generar_diagrama_de_areas_de_frecuencias_por_hora(data):
     ax.set_ylabel('Cantidad de Registros')
     ax.set_title('Frecuencias por Hora', fontweight='bold', fontsize=14)
     ax.legend()
+    return fig
+
+def generar_diagrama_de_areas_de_frecuencias_por_hora_2(data):
+    frecuencia_microsuenos = data['microsuenos']
+    frecuencia_distracciones = data['distracciones']
+    frecuencia_pausas = data['pausas']
+
+    fig, ax = plt.subplots(figsize=(12, 6))
+    
+    # Generar el gráfico de áreas
+    ax.fill_between(frecuencia_microsuenos.index, frecuencia_microsuenos, color='skyblue', alpha=0.6, label='Microsueños')
+    ax.fill_between(frecuencia_distracciones.index, frecuencia_distracciones, color='orange', alpha=0.6, label='Distracciones')
+    ax.fill_between(frecuencia_pausas.index, frecuencia_pausas, color='lightgreen', alpha=0.6, label='Pausas')
+
+    # Opcional: Agregar líneas base en 0 para claridad
+    ax.plot(frecuencia_microsuenos.index, [0] * len(frecuencia_microsuenos), color='blue', linestyle='--', linewidth=0.5)
+    ax.plot(frecuencia_distracciones.index, [0] * len(frecuencia_distracciones), color='orange', linestyle='--', linewidth=0.5)
+    ax.plot(frecuencia_pausas.index, [0] * len(frecuencia_pausas), color='green', linestyle='--', linewidth=0.5)
+
+    # Configurar el eje X con formato de hora
+    ax.xaxis.set_major_locator(HourLocator(interval=1))
+    ax.xaxis.set_major_formatter(DateFormatter('%H:%M'))
+    ax.set_xlabel('Hora', fontsize=12)
+    ax.set_ylabel('Cantidad de Registros', fontsize=12)
+    ax.set_title('Frecuencias por Hora', fontweight='bold', fontsize=14)
+
+    # Personalización estética
+    ax.grid(visible=True, which='major', linestyle='--', linewidth=0.5, alpha=0.7)
+    ax.legend(fontsize=10)
+    plt.xticks(rotation=45)
+
     return fig
 
 def guardar_en_cache(graficos):

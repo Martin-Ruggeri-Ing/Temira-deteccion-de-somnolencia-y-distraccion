@@ -1,6 +1,6 @@
 from csv_service import agregar_horas, agregar_recorrido, cargar_datos
-from data_analysis_service import obtener_datos_para_barras_de_frecuencias_agrupadas_por_recorrido, obtener_datos_para_diagrama_de_areas_de_frecuencias_por_hora, obtener_datos_para_grafico_torta
-from data_visualization_service import generar_diagrama_de_areas_de_frecuencias_por_hora, generar_diagrama_de_barras_de_frecuencias_agrupadas_por_recorrido, generar_grafico_torta, guardar_en_cache
+from data_analysis_service import hay_multiples_recorridos, obtener_datos_para_barras_de_frecuencias_agrupadas_por_recorrido, obtener_datos_para_diagrama_de_areas_de_frecuencias_por_hora, obtener_datos_para_grafico_torta
+from data_visualization_service import generar_diagrama_de_areas_de_frecuencias_por_hora_2, generar_diagrama_de_barras_de_frecuencias_agrupadas_por_recorrido, generar_grafico_torta, guardar_en_cache
 import streamlit as st
 from encryption_service import get_temp_path_encrypted_file, get_temp_path_file, leer_clave, desencriptar_archivo
 from pdf_service import generar_informe_pdf
@@ -40,14 +40,15 @@ def main():
         st.pyplot(fig1)
 
         # Mostrar el diagrama de frecuencias por recorrido
-        st.subheader("Diagrama de Frecuencias por Recorrido")
-        st.markdown('Este diagrama muestra la cantidad de pausas, microsueños y distracciones por recorrido')
         datos = agregar_recorrido(datos)
-        st.subheader("Dataframe con recorridos")
-        st.dataframe(datos)
-        x,y = obtener_datos_para_barras_de_frecuencias_agrupadas_por_recorrido(datos)
-        fig2 = generar_diagrama_de_barras_de_frecuencias_agrupadas_por_recorrido(x,y)
-        st.pyplot(fig2)
+        if hay_multiples_recorridos(datos):
+            st.subheader("Diagrama de Frecuencias por Recorrido")
+            st.markdown('Este diagrama muestra la cantidad de pausas, microsueños y distracciones por recorrido')
+            st.subheader("Dataframe con recorridos")
+            st.dataframe(datos)
+            x,y = obtener_datos_para_barras_de_frecuencias_agrupadas_por_recorrido(datos)
+            fig2 = generar_diagrama_de_barras_de_frecuencias_agrupadas_por_recorrido(x,y)
+            st.pyplot(fig2)
 
         # Mostrar el diagramas de frecuencias
         st.subheader("Diagramas de Frecuencias Horarias")
@@ -57,7 +58,7 @@ def main():
         st.dataframe(datos1)
 
         datos_para_diagrama_de_frecuencias = obtener_datos_para_diagrama_de_areas_de_frecuencias_por_hora(datos)
-        fig3 = generar_diagrama_de_areas_de_frecuencias_por_hora(datos_para_diagrama_de_frecuencias)
+        fig3 = generar_diagrama_de_areas_de_frecuencias_por_hora_2(datos_para_diagrama_de_frecuencias)
 
         st.pyplot(fig3)
 

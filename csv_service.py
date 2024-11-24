@@ -31,6 +31,7 @@ def agregar_duracion(df):
 def cargar_datos(archivo_csv):
     converters = {'inicio': convertir_fecha, 'fin': convertir_fecha}
     df = pd.read_csv(archivo_csv, converters=converters)
+    print(df)
     # Verificar que todos los campos estén escritos correctamente
     df['causa'] = df['causa'].apply(lambda x: x.lower())
     df = df[df['causa'].isin(['microsueño', 'distraccion','on', 'off', 'pause', 'play'])]

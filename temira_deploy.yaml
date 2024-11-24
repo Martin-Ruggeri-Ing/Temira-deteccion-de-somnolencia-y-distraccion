@@ -1,4 +1,5 @@
-#Ingress
+---
+# Ingress
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -20,7 +21,7 @@ spec:
                   number: 80
 
 ---
-#ConfigMap
+# ConfigMap
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -32,7 +33,56 @@ data:
   STREAMLIT_BROWSER_GATHER_USAGE_STATS: "false"
 
 ---
-#Service
+# Secret for SSH keys
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ssh-keys
+type: Opaque
+data:
+  clave_publica.pem: 
+    LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUJDZ0tDQVFFQXIwZHhTYU5IRVErU2NN
+    VG1Ebmd3ZmlvTGFvTzBLaGhKTnRoS2ovc1I1eVNPVFQ1bHF3VDYKUU91bE02ZTJzZ2pkQkV1QXhj
+    WkxCRktKMCtsWWlBcXQvaE9mZVg4eFJseWZLMll6YzJBMENFL051Rk5yaHNVNgpHRDNHL3dQUWhD
+    Y2NtKzUzaHdYOHlpbTJJSlpXY2ZxaEJxUnhMT0JiSDlTZ0VDY25aaElDRFE3b3FSRnVDUTNyCnNh
+    WHRRbGwrNE80anIvNm80bnBYaG42a0Q2d3dmZW5BUDY1Ym55MkNkY2VKMnZSeTNsYzVURjFiNzdM
+    bzcxb1YKQlNIdWdVN0I0QWo5ZUFUd3RxbGxKaVNHZzVyVmNhbjB6MEs5YU02d0hnR3FiZ04vZEFK
+    aUhSQS9JaklqNTJMUQpnQWpQM01nWVlOVnFTTTZBZ1pKZ0pMck8wbkQxaGZzM1B3SURBUUFCCi0t
+    LS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0K
+  clave_privada.pem:
+    LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcWdJQkFBS0NBUUVBcjBkeFNhTkhF
+    UStTY01UbURuZ3dmaW9MYW9PMEtoaEpOdGhLai9zUjV5U09UVDVsCnF3VDZRT3VsTTZlMnNnamRC
+    RXVBeGNaTEJGS0owK2xZaUFxdC9oT2ZlWDh4Umx5ZksyWXpjMkEwQ0UvTnVGTnIKaHNVNkdEM0cv
+    d1BRaENjY20rNTNod1g4eWltMklKWldjZnFoQnFSeExPQmJIOVNnRUNjblpoSUNEUTdvcVJGdQpD
+    UTNyc2FYdFFsbCs0TzRqci82bzRucFhobjZrRDZ3d2ZlbkFQNjVibnkyQ2RjZUoydlJ5M2xjNVRG
+    MWI3N0xvCjcxb1ZCU0h1Z1U3QjRBajllQVR3dHFsbEppU0dnNXJWY2FuMHowSzlhTTZ3SGdHcWJn
+    Ti9kQUppSFJBL0lqSWoKNTJMUWdBalAzTWdZWU5WcVNNNkFnWkpnSkxyTzBuRDFoZnMzUHdJREFR
+    QUJBb0lCQUJWdG1uL3lJaUlIMFZOUAovd0FOMlgvVERBbzloNjBOd3dXZGM2QWVoWlhJZGswakw3
+    SzByUk42dTN1UktWaWlsTUtOcUhTRlJXNkYyS3U3CmYwTkNhdnNBMHlJN1ZuN1BtL1htVEt2eU91
+    bzVOMkV0Y1p2TVNNbmw0NG9Sb1ZCR3A4eTRYb3gzUXV4RUpTdmUKdFRyQjlTV212TjlMbmxoSjJo
+    d2dGVE92YytmRk9JNUI4ZjJwU2I4enR5WnE2YXhhampqL2gxbkwvZmlsdzFLNQpVczYrVnlsTkpT
+    b0RKbFM3WVVuVW5Yc0VQcVVhSlpVYkU1S2JOcW1keG1BTk5kckFpNDM2UUI1RURHRVdrb2Z1CmxK
+    VVBEZkF2UmdoUzhodytLK3ZCWUpwWURoZlZBN2xtSms1NFZTUG05MTJ5NUd4cHJuUEFrdXgwQy83
+    WUlRQVQKbHFYNTFVRUNnWWtBNE92dnJvUklIV0czMnJTaUVOK3NTRVpqczc1ZVZTSGorY2ZaK1VX
+    dHFlTUZROUZhMUNxUQozNXo1M1VRd3RxanNNNFFYMitGRWNXSzQwV01zSjZmWGY5Um5aQUZJdkNx
+    UFl2bWNlbGtTd205eWo1U3ZlUmRMCmhkVzBCZGF3R1kxYktvRE1aMHVQWTFOR0xMMDdEZVk2bzBl
+    VWwvejlDbkt5QzRJMnVXbGMzelFXZTJhTWlHSTMKYVFKNUFNZC9oUlVOcDJXcUVBSGliRnVuQjQ5
+    YUJSZWZWNmcvRzJ6UVZxdVRzdzBLb3Nibld0bFdsZS94ZlIvSgpvb3IyYnN0clVsczNNVFpKMVBS
+    aVorUWNpNzZzL002cHdMdDIwNnovYmk5RFpmYUtnVlFKdG13clROL0FJb05jCmZ3cTRmYWw3aVBp
+    SjZlL2JObzRtMjMzOXJ2YlFHeFJyZnk0TVp3S0JpUURSMTIwakhXa0dlSCtHUFJZaXRmdE8KNXRU
+    b0FnaVNWbThTUDRFK1RlS3E2QkdtWnZEZGx1VFlxdVIycWNMazk0NSt0Wk5vNGE3d05oR0YwSWVH
+    YTlIagpBZkIvM2E3VlZzTzFySGx2c0NDUFpGaTJXaHFuMTdMdkp5U3dlYzZMMkZTZ3Y4OXo0NHZn
+    Ti9YMWtZcEIrblRrCmxzaXNVQ3hvRGYvTU91MEJhS3ByMTNYT0pTdWhwamhaQW5oRDFqUGR0ZGZm
+    TlJYZVhpejBlWGFUbzB1cC9hL2oKOFJtVlJiN0M5eVZpWU9SNitENm5PczhmV1NGd0JyTnp4MXBq
+    WjJvSXhGckNtQmFHeDFPR2VNSjRJd0NRRVo4TQozOW9Zc0g2NktaUHBZcTJaY3ZnS0RpdEV4bU8y
+    QVdUZHMyQmZtamM0TkVWTkgyQ01zOS9kRnI5QkJBREJUOUJlClN5OENnWWtBdmp3Nkl0REtSdTRV
+    emtvb0dCeDMvUGxzTHpLM3l6UE9US1F0QVZGeG83anJsOFh5K0tWdnlVMlYKS2kwbkZhRFBDWkVT
+    YkZCU0U0clVYTEVsNXJsWUEzZ3Q4a28zenAzRjVYQWVnNkVYRThRdGIyZVBQaEF5SW5iNQpzL1g0
+    S3kxYk5sS3FBK3QzZ1M3eG9lK3dIU3gwNFRHd01FVnZ0VGZJaHZkT2pIVDBSRm9ENTErTW9xdEFS
+    QT09Ci0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg==
+
+---
+# Service
 apiVersion: v1
 kind: Service
 metadata:
@@ -48,7 +98,7 @@ spec:
     app: temira
 
 ---
-#StatefulSet
+# StatefulSet
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -66,11 +116,17 @@ spec:
       labels:
         app: temira
     spec:
+      initContainers:
+      - name: fix-ssh-permissions
+        image: busybox
+        command: ["sh", "-c", "chmod 600 /app/claves/*"]
+        volumeMounts:
+        - name: ssh-keys-storage
+          mountPath: /app/claves
 
       containers:
       - name: temira
         image: martinr2020/temira-web-analytics:latest
-
         ports:
         - containerPort: 8501
 
@@ -94,13 +150,21 @@ spec:
                 key: STREAMLIT_BROWSER_GATHER_USAGE_STATS
 
         volumeMounts:
+        - name: ssh-keys-storage
+          mountPath: /app/claves
+          readOnly: true
         - name: temp-csvs-storage
           mountPath: /app/temp_csvs
         - name: temp-pdfs-storage
           mountPath: /app/temp_pdfs
         - name: temp-images-storage
           mountPath: /app/images
-  
+
+      volumes:
+      - name: ssh-keys-storage
+        secret:
+          secretName: ssh-keys
+
   volumeClaimTemplates:
   - metadata:
       name: temp-csvs-storage
@@ -111,7 +175,7 @@ spec:
       resources:
         requests:
           storage: 5Gi
-  
+
   - metadata:
       name: temp-pdfs-storage
       labels:
@@ -121,7 +185,7 @@ spec:
       resources:
         requests:
           storage: 5Gi
-  
+
   - metadata:
       name: temp-images-storage
       labels:
@@ -131,4 +195,5 @@ spec:
       resources:
         requests:
           storage: 5Gi
+---
 

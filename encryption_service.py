@@ -2,6 +2,7 @@ import rsa
 import tempfile
 import os
 from paths import temp_csvs_path, claves_path
+import hashlib
 
 def generar_claves():
     clave_publica, clave_privada = rsa.newkeys(2048)
@@ -50,4 +51,54 @@ def desencriptar_archivo(clave_privada, ruta_temporal_archivo_encritado):
 
     return contenido_desencriptado
 
+def desencriptar_archivo(clave_privada, ruta_temporal_archivo_encritado):
+    TAM_BLOQUE = 256  # Tamaño del bloque en bytes
+    desencriptado_exitoso = False
+
+    # Leer el archivo encriptado y obtener el checksum
+    with open(ruta_temporal_archivo_encritado, 'rb') as archivo:
+        # Leer la primera línea para obtener el checksum
+        primera_linea = archivo.readline().decode().strip()
+        if not primera_linea.startswith("checksum:"):
+            raise ValueError("El archivo encriptado no contiene un checksum válido.")
+        checksum_original = primera_linea.split(":")[1]
+        print(checksum_original)
+
+        # Leer el resto del archivo y desencriptarlo
+        contenido_desencriptado = b""
+        while True:
+            bloque = archivo.read(TAM_BLOQUE)
+            if len(bloque) == 0:
+                break  # Se llegó al final del archivo
+
+            contenido_desencriptado += rsa.decrypt(bloque, clave_privada)
+        desencriptado_exitoso = True
+    
+    if desencriptado_exitoso:
+        os.remove(ruta_temporal_archivo_encritado)
+
+    # Guardar el contenido desencriptado en un archivo temporal
+    archivo_temporal = "archivo_desencriptado.csv"
+    with open(archivo_temporal, 'wb') as archivo:
+        archivo.write(contenido_desencriptado)
+
+    # Calcular el checksum del archivo desencriptado
+    checksum_calculado = calcular_checksum(archivo_temporal)
+    print(checksum_calculado)
+
+    # Comparar los checksums
+    if checksum_original == checksum_calculado:
+        print("El archivo desencriptado es válido.")
+        # Retornar el contenido desencriptado y eliminar el archivo temporal
+        os.remove(archivo_temporal)
+        return contenido_desencriptado
+    else:
+        raise ValueError("El archivo desencriptado no es válido.")
+
+def calcular_checksum(file_path):
+    hash_md5 = hashlib.md5()
+    with open(file_path, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            hash_md5.update(chunk)
+    return hash_md5.hexdigest()[:8]
 

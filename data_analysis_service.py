@@ -54,6 +54,9 @@ def obtener_datos_para_grafico_torta(datos):
     }
     return datos_para_grafico_torta
 
+def hay_multiples_recorridos(df):
+    return df['recorrido'].nunique() > 1
+
 def obtener_datos_para_barras_de_frecuencias_agrupadas_por_recorrido(df):
     recorridos = df['recorrido'].unique()
     causas = ['microsueño', 'distraccion', 'pause']
