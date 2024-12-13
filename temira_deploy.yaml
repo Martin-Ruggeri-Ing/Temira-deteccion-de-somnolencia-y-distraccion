@@ -174,7 +174,7 @@ spec:
       accessModes: ["ReadWriteOnce"]
       resources:
         requests:
-          storage: 5Gi
+          storage: 2Gi
 
   - metadata:
       name: temp-pdfs-storage
@@ -184,7 +184,7 @@ spec:
       accessModes: ["ReadWriteOnce"]
       resources:
         requests:
-          storage: 5Gi
+          storage: 2Gi
 
   - metadata:
       name: temp-images-storage
@@ -194,6 +194,6 @@ spec:
       accessModes: ["ReadWriteOnce"]
       resources:
         requests:
-          storage: 5Gi
+          storage: 2Gi
 ---
 
