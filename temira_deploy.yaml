@@ -6,8 +6,8 @@ metadata:
   name: temira-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
-    kubernetes.io/ingress.class: nginx
 spec:
+  ingressClassName: nginx
   rules:
     - host: mruggeri-temira.my.kube.um.edu.ar
       http:
@@ -40,15 +40,6 @@ metadata:
   name: ssh-keys
 type: Opaque
 data:
-  clave_publica.pem: 
-    LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUJDZ0tDQVFFQXIwZHhTYU5IRVErU2NN
-    VG1Ebmd3ZmlvTGFvTzBLaGhKTnRoS2ovc1I1eVNPVFQ1bHF3VDYKUU91bE02ZTJzZ2pkQkV1QXhj
-    WkxCRktKMCtsWWlBcXQvaE9mZVg4eFJseWZLMll6YzJBMENFL051Rk5yaHNVNgpHRDNHL3dQUWhD
-    Y2NtKzUzaHdYOHlpbTJJSlpXY2ZxaEJxUnhMT0JiSDlTZ0VDY25aaElDRFE3b3FSRnVDUTNyCnNh
-    WHRRbGwrNE80anIvNm80bnBYaG42a0Q2d3dmZW5BUDY1Ym55MkNkY2VKMnZSeTNsYzVURjFiNzdM
-    bzcxb1YKQlNIdWdVN0I0QWo5ZUFUd3RxbGxKaVNHZzVyVmNhbjB6MEs5YU02d0hnR3FiZ04vZEFK
-    aUhSQS9JaklqNTJMUQpnQWpQM01nWVlOVnFTTTZBZ1pKZ0pMck8wbkQxaGZzM1B3SURBUUFCCi0t
-    LS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0K
   clave_privada.pem:
     LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcWdJQkFBS0NBUUVBcjBkeFNhTkhF
     UStTY01UbURuZ3dmaW9MYW9PMEtoaEpOdGhLai9zUjV5U09UVDVsCnF3VDZRT3VsTTZlMnNnamRC
@@ -116,14 +107,6 @@ spec:
       labels:
         app: temira
     spec:
-      initContainers:
-      - name: fix-ssh-permissions
-        image: busybox
-        command: ["sh", "-c", "chmod 600 /app/claves/*"]
-        volumeMounts:
-        - name: ssh-keys-storage
-          mountPath: /app/claves
-
       containers:
       - name: temira
         image: martinr2020/temira-web-analytics:latest
