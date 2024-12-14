@@ -35,25 +35,6 @@ def get_temp_path_file(file_csv):
 def desencriptar_archivo(clave_privada, ruta_temporal_archivo_encritado):
     TAM_BLOQUE = 256  # Tamaño del bloque en bytes
     desencriptado_exitoso = False
-    contenido_desencriptado = b""
-    with open(ruta_temporal_archivo_encritado, 'rb') as archivo:
-        while True:
-            bloque_encriptado = archivo.read(TAM_BLOQUE)
-            if len(bloque_encriptado) == 0:
-                break  # Se llegó al final del archivo encriptado
-
-            bloque_desencriptado = rsa.decrypt(bloque_encriptado, clave_privada)
-            contenido_desencriptado += bloque_desencriptado
-        desencriptado_exitoso = True
-    
-    if desencriptado_exitoso:
-        os.remove(ruta_temporal_archivo_encritado)
-
-    return contenido_desencriptado
-
-def desencriptar_archivo(clave_privada, ruta_temporal_archivo_encritado):
-    TAM_BLOQUE = 256  # Tamaño del bloque en bytes
-    desencriptado_exitoso = False
 
     # Leer el archivo encriptado y obtener el checksum
     with open(ruta_temporal_archivo_encritado, 'rb') as archivo:
