@@ -80,7 +80,7 @@ spec:
     spec:
       containers:
       - name: temira
-        image: martinr2020/temira-web-analytics:v3.0.0
+        image: martinr2020/temira-web-analytics:v4.0.0
         ports:
         - containerPort: 8501
 
